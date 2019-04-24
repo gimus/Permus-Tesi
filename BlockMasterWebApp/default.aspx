@@ -9,9 +9,9 @@
     <meta http-equiv="refresh" content="10" />
 </head>
 <body>
-    <h1>Welcome to Permus BlockMaster</h1>
-    <div>scarica l'App di Permus <a href="http://www.pardesca.it:4080/permus/app/PermusClient/PermusClient.application">qui</a></div>
-    <div>connettiti al bot telegram <a href="https://web.telegram.org/#/im?p=@Permus_bot">qui</a></div>
+    <h1>Welcome to Permus-Tesi BlockMaster</h1>
+    <div>scarica l'App di Permus <a href="http://www.pardesca.it:4080/permus-tesi/app/PermusClient/PermusClient.application">qui</a></div>
+   
 
     <hr />
     <div class="data" >

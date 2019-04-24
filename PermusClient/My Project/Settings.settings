@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="serverUrl" Type="System.String" Scope="User">
-      <Value Profile="(Default)">http://www.pardesca.it:4080/permus/</Value>
+      <Value Profile="(Default)">http://www.pardesca.it:4080/permus-tesi/</Value>
     </Setting>
     <Setting Name="localDbConnectionString" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
@@ -18,7 +18,7 @@
       <Value Profile="(Default)">3</Value>
     </Setting>
     <Setting Name="test" Type="System.String" Scope="User">
-      <Value Profile="(Default)">https://localhost:44360/  http://213.251.184.127:4080/permus/</Value>
+      <Value Profile="(Default)" />
     </Setting>
     <Setting Name="DEBUG_autoaccetta" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
