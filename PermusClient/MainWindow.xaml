@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PermusClient"
         mc:Ignorable="d"
-        Title="Permus Client" Height="450" Width="800" Icon="Images/bc2.ico">
+        Title="Permus Client Tesi" Height="450" Width="800" Icon="Images/bc2.ico">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
