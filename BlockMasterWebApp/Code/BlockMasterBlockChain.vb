@@ -151,9 +151,6 @@ Public Class BlockMasterBlockChain
         End If
         If dt.Rows.Count > 0 Then
             subject.profile = Factory.leggiProtectedSubjectProfile(dt.Rows(0))
-            If subject.profile.hasTelegram Then
-                App.H.AddSubject(subject)
-            End If
         End If
     End Sub
 
@@ -257,7 +254,6 @@ Public Class BlockMasterBlockChain
 
                 ttp.transaction.updateState()
 
-                App.H.notifySubjectsTransferTransaction(ttp)
 
             Case "TransferTransactionAccept"
                 Dim oldttp = pendingTransferTransactions(ttp.transaction.transferId)
@@ -287,7 +283,6 @@ Public Class BlockMasterBlockChain
 
                 ttp.transaction.updateState()
 
-                App.H.notifySubjectsTransferTransaction(ttp)
         End Select
 
         Return ttp
@@ -322,7 +317,6 @@ Public Class BlockMasterBlockChain
         If ttp IsNot Nothing Then
             pendingTransferTransactions.Remove(ttp.transaction.transferId)
             ttp.transaction.cancel()
-            App.H.notifySubjectsTransferTransaction(ttp)
             ttp = Nothing
         End If
         Return UserPendingTransfers(requester.id)

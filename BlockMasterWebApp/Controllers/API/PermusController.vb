@@ -60,7 +60,6 @@ Namespace Controllers
                         requester.token = Guid.NewGuid().ToString
                         Dim si As SystemInfo = GetSystemInfo(requester.id, requester.token, "")
                         si.requesterInfo.token = requester.token
-                        App.H.sendAdminLogMessage("Checked in: " & requester.name)
                         Return si
                     Else
                         Return Nothing
@@ -171,7 +170,6 @@ Namespace Controllers
                     Throw New HttpResponseException(New HttpResponseMessage(HttpStatusCode.BadRequest) With {.ReasonPhrase = "request not in sync!"})
                 End If
             Catch ex As Exception
-                App.H.sendAdminLogMessage("TTPH2 Error:" & ex.Message)
                 Throw New HttpResponseException(New HttpResponseMessage(HttpStatusCode.BadRequest) With {.ReasonPhrase = ex.Message})
             End Try
         End Function

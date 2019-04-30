@@ -4,7 +4,6 @@ Imports OtpNet
 Public Class App
     Inherits System.Web.HttpApplication
     Protected B As BlockMasterBlockChain
-    Public Shared H As TelegramBotHandler
     Public Shared mailer As Mailer
     Public Sub New()
     End Sub
@@ -12,8 +11,6 @@ Public Class App
     Protected Sub Application_Start()
         GlobalConfiguration.Configure(AddressOf WebApiConfig.Register)
         mailer = New Mailer(My.Settings.dbConnectionString)
-        H = New TelegramBotHandler
-        H.StartReceivingMessages()
         Try
             B = New BlockMasterBlockChain(My.Settings.dbConnectionString)
         Catch ex As Exception
@@ -22,7 +19,6 @@ Public Class App
     End Sub
 
     Protected Sub Application_End()
-        H.StopReceivingMessages()
     End Sub
 
 

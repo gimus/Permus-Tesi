@@ -157,7 +157,6 @@
     <Compile Include="Code\BlockMasterDataAdapter.vb" />
     <Compile Include="Code\Factory.vb" />
     <Compile Include="Interop\Mailer.vb" />
-    <Compile Include="Code\TelegramBotHandler.vb" />
     <Compile Include="Controllers\API\DeviceController.vb" />
     <Compile Include="Controllers\API\PermusController.vb" />
     <Compile Include="default.aspx.designer.vb">
@@ -205,7 +204,6 @@
       <DependentUpon>qrcode.aspx</DependentUpon>
       <SubType>ASPXCodebehind</SubType>
     </Compile>
-    <Compile Include="Interop\TelegramBotClient.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="My Project\Resources.resx">
