@@ -48,11 +48,16 @@ Public Class BlockChain
     End Property
 
     Protected Function isBlockValid(blockToVerify As Block, nextBlock As Block) As Boolean
-        If nextBlock.serial = blockToVerify.serial + 1 Then
-            Return isBlockValid(blockToVerify, nextBlock.prev_vers)
-        Else
+        Try
+            If nextBlock.serial = blockToVerify.serial + 1 Then
+                Return isBlockValid(blockToVerify, nextBlock.prev_vers)
+            Else
+                Return False
+            End If
+
+        Catch ex As Exception
             Return False
-        End If
+        End Try
     End Function
 
     Public ReadOnly Property subjects As Subjects

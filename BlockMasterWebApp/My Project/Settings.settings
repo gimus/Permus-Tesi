@@ -10,10 +10,10 @@
       <Value Profile="(Default)">Data Source=(local);Initial Catalog=BM-TESI;User ID=bm_user;Password=pippo</Value>
     </Setting>
     <Setting Name="CER_Authority" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">Associazione Abbracci di Luce</Value>
+      <Value Profile="(Default)">Gimus</Value>
     </Setting>
     <Setting Name="CER_SubAuthority" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">AAL Gestione</Value>
+      <Value Profile="(Default)">Pyzzalab</Value>
     </Setting>
     <Setting Name="iot_bot_key" Type="System.String" Scope="Application">
       <Value Profile="(Default)">833732354:AAFV7ax0Zc8RwRy4etST1lxhuWWu2jFNuiw</Value>

@@ -125,79 +125,84 @@ Public Class ClientBlockChain
     End Function
 
     Protected Function isBlockFetchedFromBlockMasterValid(b As Block, Optional fireNotifyEvents As Boolean = True) As Boolean
-        ' il blocco caricato dal BlockMaster potrebbe essere non valido per numerosi motivi ... vediamoli uno per uno:
-        If b Is Nothing Then
-            If fireNotifyEvents Then RaiseEvent Notification(BlockChainNotifyEventType.blockFetchedIsInvalid, String.Format("Block Empty - Could not fetch it!"))
-            Return False
-        End If
-
-        If b.serial = 1 Then
-            ' per il momento prendiamo per buono il primo blocco della blockchain perché non vi è modo per verificare la sua validità con un blocco precedente ...
-            Return True
-        Else
-            ' andiamo a prenderci il blocco immediatamente precedente dalla cache in memoria oppure dal db locale
-            Dim bprec As Block = blockCache.getBlock(b.serial - 1)
-            If bprec Is Nothing Then
-                bprec = da.getBlock(b.serial - 1)
+        Try
+            ' il blocco caricato dal BlockMaster potrebbe essere non valido per numerosi motivi ... vediamoli uno per uno:
+            If b Is Nothing Then
+                If fireNotifyEvents Then RaiseEvent Notification(BlockChainNotifyEventType.blockFetchedIsInvalid, String.Format("Block Empty - Could not fetch it!"))
+                Return False
             End If
 
-            ' l'hash del blocco precedente deve essere quello indicato bel blocco in esame
-            If Not Me.isBlockValid(bprec, b) Then
-                Dim bloc_valid As Boolean = False
+            If b.serial = 1 Then
+                ' per il momento prendiamo per buono il primo blocco della blockchain perché non vi è modo per verificare la sua validità con un blocco precedente ...
+                Return True
+            Else
+                ' andiamo a prenderci il blocco immediatamente precedente dalla cache in memoria oppure dal db locale
+                Dim bprec As Block = blockCache.getBlock(b.serial - 1)
+                If bprec Is Nothing Then
+                    bprec = da.getBlock(b.serial - 1)
+                End If
 
-                ' ma esiste la possibilità che il blocco locale sia obsoleto... verifichiamolo
-                Dim bprec_s As Block = api.getBlock(b.serial - 1).Result
-                ' ovviamente la catena deve rimanere integra e quindi anche il blocco preso dal server deve puntare correttamente al precedente
-                If utility.areEquals(bprec_s.prev_vers, bprec.prev_vers) Then
-                    ' se la copia sul server è una versione aggiornata (piu transazioni) di quella nella chain locale ... lo prendiamo per buono
-                    If bprec_s.transactions.Count > bprec.transactions.Count Then
-                        da.saveBlock(bprec_s)
+                ' l'hash del blocco precedente deve essere quello indicato bel blocco in esame
+                If Not Me.isBlockValid(bprec, b) Then
+                    Dim bloc_valid As Boolean = False
+
+                    ' ma esiste la possibilità che il blocco locale sia obsoleto... verifichiamolo
+                    Dim bprec_s As Block = api.getBlock(b.serial - 1).Result
+                    ' ovviamente la catena deve rimanere integra e quindi anche il blocco preso dal server deve puntare correttamente al precedente
+                    If utility.areEquals(bprec_s.prev_vers, bprec.prev_vers) Then
+                        ' se la copia sul server è una versione aggiornata (piu transazioni) di quella nella chain locale ... lo prendiamo per buono
+                        If bprec_s.transactions.Count > bprec.transactions.Count Then
+                            da.saveBlock(bprec_s)
+                        End If
+                        ' rifacciamo il controllo 
+                        bloc_valid = Me.isBlockValid(bprec_s, b)
                     End If
-                    ' rifacciamo il controllo 
-                    bloc_valid = Me.isBlockValid(bprec_s, b)
-                End If
 
-                If Not bloc_valid Then
-                    If fireNotifyEvents Then RaiseEvent Notification(BlockChainNotifyEventType.blockFetchedIsInvalid, String.Format("Block # {0} fetched from BlockMaster is invalid: PREVIOUS_BLOCK_HASH_MISMATCH", b.serial))
-                    Return False
-                End If
-
-            End If
-
-            ' l'hash delle transazioni contenute nel blocco fornitoci dal BlockMaster deve essere corretto
-            If Not utility.areEquals(b.trans_root, b.transactions.computeHash()) Then
-                If fireNotifyEvents Then RaiseEvent Notification(BlockChainNotifyEventType.blockFetchedIsInvalid, String.Format("Block # {0} fetched from BlockMaster is invalid: TRANS_ROOT_MISMATCH", b.serial))
-            End If
-
-            ' vediamo se  esiste una versione locale del blocco che abbiamo caricato dal blockMaster
-            Dim bVersioneLocale As Block = da.getBlock(b.serial)
-
-            ' se esiste dobbiamo verificare la bonta' del contenuto della nuova versione del blocco analizzando le transazioni in essi contenute
-            If bVersioneLocale IsNot Nothing Then
-                If Not utility.areEquals(b.trans_root, bVersioneLocale.trans_root) Then
-
-                    ' non essendo uguali i trans_root, allora il nuovo blocco deve avere più transazioni di quello attualmente presente nella local blockchain, 
-                    ' se ha le stesse o di meno allora non va certo bene
-
-                    Dim ntLoc As Integer = bVersioneLocale.transactions.Count
-
-                    If b.transactions.Count <= ntLoc Then
-                        If fireNotifyEvents Then RaiseEvent Notification(BlockChainNotifyEventType.blockFetchedIsInvalid, String.Format("Block # {0} fetched from BlockMaster is invalid: TRANSACTIONS_INVALID", b.serial))
+                    If Not bloc_valid Then
+                        If fireNotifyEvents Then RaiseEvent Notification(BlockChainNotifyEventType.blockFetchedIsInvalid, String.Format("Block # {0} fetched from BlockMaster is invalid: PREVIOUS_BLOCK_HASH_MISMATCH", b.serial))
                         Return False
-                    Else
-                        ' l'hash delle transazioni comuni deve essere lo stesso
-                        ' ciò garantisce che oltre alle nuove transazioni non siano state modificate le transazioni precedenti
-                        Dim btr() As Byte = b.transactions.computeHash(ntLoc)
-                        If Not utility.areEquals(bVersioneLocale.trans_root, btr) Then
+                    End If
+
+                End If
+
+                ' l'hash delle transazioni contenute nel blocco fornitoci dal BlockMaster deve essere corretto
+                If Not utility.areEquals(b.trans_root, b.transactions.computeHash()) Then
+                    If fireNotifyEvents Then RaiseEvent Notification(BlockChainNotifyEventType.blockFetchedIsInvalid, String.Format("Block # {0} fetched from BlockMaster is invalid: TRANS_ROOT_MISMATCH", b.serial))
+                End If
+
+                ' vediamo se  esiste una versione locale del blocco che abbiamo caricato dal blockMaster
+                Dim bVersioneLocale As Block = da.getBlock(b.serial)
+
+                ' se esiste dobbiamo verificare la bonta' del contenuto della nuova versione del blocco analizzando le transazioni in essi contenute
+                If bVersioneLocale IsNot Nothing Then
+                    If Not utility.areEquals(b.trans_root, bVersioneLocale.trans_root) Then
+
+                        ' non essendo uguali i trans_root, allora il nuovo blocco deve avere più transazioni di quello attualmente presente nella local blockchain, 
+                        ' se ha le stesse o di meno allora non va certo bene
+
+                        Dim ntLoc As Integer = bVersioneLocale.transactions.Count
+
+                        If b.transactions.Count <= ntLoc Then
                             If fireNotifyEvents Then RaiseEvent Notification(BlockChainNotifyEventType.blockFetchedIsInvalid, String.Format("Block # {0} fetched from BlockMaster is invalid: TRANSACTIONS_INVALID", b.serial))
                             Return False
-                        End If
+                        Else
+                            ' l'hash delle transazioni comuni deve essere lo stesso
+                            ' ciò garantisce che oltre alle nuove transazioni non siano state modificate le transazioni precedenti
+                            Dim btr() As Byte = b.transactions.computeHash(ntLoc)
+                            If Not utility.areEquals(bVersioneLocale.trans_root, btr) Then
+                                If fireNotifyEvents Then RaiseEvent Notification(BlockChainNotifyEventType.blockFetchedIsInvalid, String.Format("Block # {0} fetched from BlockMaster is invalid: TRANSACTIONS_INVALID", b.serial))
+                                Return False
+                            End If
 
+                        End If
                     End If
                 End If
             End If
-        End If
-        Return True
+            Return True
+
+        Catch ex As Exception
+            Return False
+        End Try
     End Function
 
     Protected Friend Overrides Function obtainBlock(serial As Long, Optional forceLoadFromBlockMaster As Boolean = False, Optional fireNotifyEvents As Boolean = True) As Block
