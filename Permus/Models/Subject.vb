@@ -58,7 +58,7 @@ Public Class Subject
 
         ' un modo grezzo per determinare se il soggetto è pubblico, 
         ' in seguito occorrerà definire uno standard per codificare tale informazione nella subject string
-        If subject.id.ToUpper.StartsWith("AAL0") Then
+        If subject.x509Certificate.Subject.ToLower.Contains("gimus") Then
             subject.isPublic = True
         End If
 
