@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="serverUrl" Type="System.String" Scope="User">
-      <Value Profile="(Default)">http://www.pardesca.it:4080/permus-tesi/</Value>
+      <Value Profile="(Default)">http://localhost/permus-tesi/</Value>
     </Setting>
     <Setting Name="localDbConnectionString" Type="System.String" Scope="User">
       <Value Profile="(Default)" />

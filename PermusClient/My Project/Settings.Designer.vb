@@ -55,7 +55,7 @@ Partial Friend NotInheritable Class MySettings
     
     <Global.System.Configuration.UserScopedSettingAttribute(),  _
      Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-     Global.System.Configuration.DefaultSettingValueAttribute("http://www.pardesca.it:4080/permus-tesi/")>  _
+     Global.System.Configuration.DefaultSettingValueAttribute("http://localhost/permus-tesi/")>  _
     Public Property serverUrl() As String
         Get
             Return CType(Me("serverUrl"),String)

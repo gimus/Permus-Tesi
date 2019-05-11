@@ -10,7 +10,7 @@
 </head>
 <body>
     <h1>Welcome to Permus-Tesi BlockMaster</h1>
-    <div>scarica l'App di Permus <a href="http://www.pardesca.it:4080/permus-tesi/app/PermusClient/PermusClient.application">qui</a></div>
+    <div>scarica l'App di Permus <a href="http://www.pardesca.it:4080/permus-tesi/app/PermusClient/PermusClientTesi.application">qui</a></div>
    
 
     <hr />
